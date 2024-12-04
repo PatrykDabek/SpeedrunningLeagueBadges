@@ -1,0 +1,41 @@
+name: Python Tests
+
+on:  # Ensures that the workflow runs when a pull request is opened or updated on the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to the main branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # The environment to run the tests on
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Checkout the code so it can be tested
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+      - name: Check for test files
+        id: check_tests
+        run: |
+          # Check if there are any Python files starting with 'test_' in the tests directory
+          if ls tests/test_*.py 1> /dev/null 2>&1; then
+            echo "Tests found"
+            echo "tests_found=true" >> $GITHUB_ENV
+          else
+            echo "No tests found"
+            echo "tests_found=false" >> $GITHUB_ENV
+          fi
+
+      - name: Run tests if found
+        if: env.tests_found == 'true'
+        run: |
+          python -m unittest discover -s tests -p "test_*.py"
