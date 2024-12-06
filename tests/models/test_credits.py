@@ -64,6 +64,25 @@ class TestCredits(unittest.TestCase):
         with self.assertRaises(InsufficientCreditsError):
             self.credit_account.update_credits(-100)
 
+    ## Following tests are for the award_credits method
+    def test_award_credits_positive_time(self):
+        earned_credits = self.credit_account.award_credits(100)
+        self.assertEqual(earned_credits, 50)
+        self.assertEqual(self.credit_account.get_credits(), 50)  # Ensure that the credits are actually added
+
+    def test_award_credits_zero_time(self):
+        with self.assertRaises(ValueError):
+            self.credit_account.award_credits(0)
+
+    def test_award_credits_negative_time(self):
+        with self.assertRaises(ValueError):
+            self.credit_account.award_credits(-10)
+
+    def test_award_credits_with_custom_base_credits(self):
+        earned_credits = self.credit_account.award_credits(50, base_credits=20)
+        self.assertEqual(earned_credits, 200)
+        self.assertEqual(self.credit_account.get_credits(), 200)
+
 
 if __name__ == '__main__':
     unittest.main()
