@@ -24,6 +24,7 @@ nav:
 
     - API Reference:
         - api_reference/credits.md
+        - api_reference/leaderboard.md
 
 plugins:
   - search
