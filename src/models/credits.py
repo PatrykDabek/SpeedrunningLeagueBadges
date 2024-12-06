@@ -1,4 +1,8 @@
+import logging
 from src.exceptions.insufficient_credits import InsufficientCreditsError
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Credits:
@@ -18,6 +22,7 @@ class Credits:
         if amount < 0:
             raise ValueError("Amount to add must be non-negative.")
         self._stored_credits += amount
+        logging.info(f"Added {amount} credits. New balance: {self._stored_credits}")
 
     def remove_credits(self, amount: int) -> None:
         """Remove credits from the user's account."""
@@ -26,6 +31,7 @@ class Credits:
         if amount > self._stored_credits:
             raise InsufficientCreditsError("Not enough credits to spend.")
         self._stored_credits -= amount
+        logging.info(f"Removed {amount} credits. New balance: {self._stored_credits}")
 
     def update_credits(self, amount: int) -> None:
         """Update credits by adding (positive) or spending (negative)."""
@@ -49,4 +55,5 @@ class Credits:
         multiplier = max(1, int(self.BASE_MULTIPLIER / seconds_taken))
         earned_credits = int(base_credits * multiplier)
         self.add_credits(earned_credits)
+        logging.info(f"Awarded {earned_credits} credits for {seconds_taken} seconds taken. New balance: {self._stored_credits}")
         return earned_credits
