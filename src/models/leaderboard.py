@@ -1,8 +1,3 @@
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 class Leaderboard:
     """Class to manage leaderboard bonuses and rankings."""
