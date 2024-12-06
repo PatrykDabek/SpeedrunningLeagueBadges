@@ -1,5 +1,6 @@
 import logging
 from src.exceptions.insufficient_credits import InsufficientCreditsError
+from src.models.leaderboard import Leaderboard
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -44,16 +45,24 @@ class Credits:
         """Get the user's current credit balance."""
         return self._stored_credits
 
-    def award_credits(self, seconds_taken: float, base_credits: int = 10) -> int:
+    def award_credits(self, seconds_taken: float, base_credits: int = 10, leaderboard: dict | None = None) -> int:
         """
         Calculates and adds the credits earned based on time taken.
         The faster the completion, the more credits earned.
+        Optionally applies leaderboard bonuses based on rank.
         """
         if seconds_taken <= 0:
             raise ValueError("Time taken must be greater than zero.")
 
         multiplier = max(1, int(self.BASE_MULTIPLIER / seconds_taken))
         earned_credits = int(base_credits * multiplier)
+
+        # Apply leaderboard bonus if leaderboard data is available
+        if leaderboard:
+            bonus_credits = Leaderboard.calculate_bonus(leaderboard, seconds_taken, earned_credits)
+            earned_credits += bonus_credits
+            logging.info(f"Leaderboard bonus applied: {bonus_credits} credits.")
+
         self.add_credits(earned_credits)
         logging.info(f"Awarded {earned_credits} credits for {seconds_taken} seconds taken. New balance: {self._stored_credits}")
         return earned_credits
