@@ -3,6 +3,13 @@ from src.exceptions.insufficient_credits import InsufficientCreditsError
 
 class Credits:
     """Credits class that contains the credits for a user."""
+
+    BASE_MULTIPLIER = 500
+    """The base multiplier for calculating credits based on time taken."""
+
+    BASE_CREDITS = 10
+    """The base credits earned by speedrunning."""
+
     def __init__(self):
         self._stored_credits: int = 0
 
@@ -31,3 +38,15 @@ class Credits:
         """Get the user's current credit balance."""
         return self._stored_credits
 
+    def award_credits(self, seconds_taken: float, base_credits: int = 10) -> int:
+        """
+        Calculates and adds the credits earned based on time taken.
+        The faster the completion, the more credits earned.
+        """
+        if seconds_taken <= 0:
+            raise ValueError("Time taken must be greater than zero.")
+
+        multiplier = max(1, int(self.BASE_MULTIPLIER / seconds_taken))
+        earned_credits = int(base_credits * multiplier)
+        self.add_credits(earned_credits)
+        return earned_credits
