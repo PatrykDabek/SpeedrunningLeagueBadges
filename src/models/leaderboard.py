@@ -14,7 +14,7 @@ class Leaderboard:
     }
     """Leaderboard rank bonuses as percentages."""
 
-    @staticmethod
+    @classmethod
     def get_bonus_percentage(cls, leaderboard: dict, seconds_taken: float) -> int:
         """
         Get the player's bonus percentage based on their rank determined by the time taken.
@@ -24,7 +24,7 @@ class Leaderboard:
                 return cls.BONUS_PERCENTAGES.get(rank, 1)  # Return the percentage for the rank
         return 1  # No bonus if not in the top ranks
 
-    @staticmethod
+    @classmethod
     def calculate_bonus(cls, leaderboard: dict, seconds_taken: float, credits: int) -> int:
         """
         Calculate the bonus credits earned based on leaderboard rank.
