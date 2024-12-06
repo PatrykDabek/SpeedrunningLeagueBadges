@@ -7,6 +7,11 @@ class TestCredits(unittest.TestCase):
     def setUp(self):
         """Set up the initial state for each test."""
         self.credit_account = Credits()  # Create a new Credits instance for each test
+        self.leaderboard = {
+            1: 50,  # Rank 1 time
+            2: 100,  # Rank 2 time
+            3: 150,  # Rank 3 time
+        }
 
     def test_initial_credits(self):
         """Test that the initial credit balance is zero."""
@@ -82,6 +87,18 @@ class TestCredits(unittest.TestCase):
         earned_credits = self.credit_account.award_credits(50, base_credits=20)
         self.assertEqual(earned_credits, 200)
         self.assertEqual(self.credit_account.get_credits(), 200)
+
+    def test_award_credits_with_leaderboard_bonus(self):
+        """Test awarding credits with a leaderboard bonus."""
+        earned_credits = self.credit_account.award_credits(45, leaderboard=self.leaderboard)
+        self.assertEqual(earned_credits, 750)  # 500 base + 250 bonus
+        self.assertEqual(self.credit_account.get_credits(), 750)
+
+    def test_award_credits_without_leaderboard_bonus(self):
+        """Test awarding credits without a leaderboard bonus."""
+        earned_credits = self.credit_account.award_credits(200)
+        self.assertEqual(earned_credits, 25)
+        self.assertEqual(self.credit_account.get_credits(), 25)
 
 
 if __name__ == '__main__':
